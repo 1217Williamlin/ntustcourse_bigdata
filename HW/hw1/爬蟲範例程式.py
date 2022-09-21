@@ -7,7 +7,7 @@ import time
 from tqdm import tqdm
 
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'} #目的是為了假裝真的上伺服器查詢而非只是爬蟲
 # 請填10個搜尋詞彙
 keywords = ['運動鞋']
 pages = 5
@@ -19,7 +19,7 @@ for keyword in keywords:
         print(url)
         resp = requests.get(url, headers=headers)
         if resp.status_code == 200:
-            soup = BeautifulSoup(resp.text, features="lxml")
+            soup = BeautifulSoup(resp.text, features="lxml")  #features 就是parser 只是平常都省略
             """
             利用for迴圈得到畫面上所有商品的連結，並儲存到urls陣列裡面
             """
@@ -46,14 +46,14 @@ for keyword in keywords:
         # 原價
         try:
             # 正規化內容，移除不必要的字元，例如\n\r等等
-            # price = re.sub()[]
+            # price = re.sub()[]  #sub(什麼格式要被替換,替換成甚麼樣,被替換的字串)
         except:
             price = ''
         # 特價
         # amount = soup.find()[]
         # 類型
         cate = ''.join([i.text for i in soup.findAll('article', {'class': 'pathArea'})])
-        cate = re.sub('\n|\xa0', ' ', cate)
+        cate = re.sub('\n|\xa0', ' ', cate)  #\xa0 代表空格  #|代表符合其中一個篩選規則即可
         # 描述
         try:
             desc = soup.find('div', {'class': 'Area101'}).text
@@ -77,7 +77,7 @@ for keyword in keywords:
                 # 整理規格的內容
                 #column = i.find().text
                 column = re.sub('\n|\r| ', '', column)
-                value = ''.join([j.text for j in i.findAll('li')])
+                value = ''.join([j.text for j in i.findAll('li')])  #代表用""空白
                 value = re.sub('\n|\r| ', '', value)
                 columns.append(column)
                 values.append(value)

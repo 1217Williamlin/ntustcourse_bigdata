@@ -77,7 +77,7 @@ for keyword in keywords:
                 # 整理規格的內容
                 #column = i.find().text
                 column = re.sub('\n|\r| ', '', column)
-                value = ''.join([j.text for j in i.findAll('li')])  #代表用""空白
+                value = ''.join([j.text for j in i.findAll('li')])  #代表用""空白連結字串
                 value = re.sub('\n|\r| ', '', value)
                 columns.append(column)
                 values.append(value)

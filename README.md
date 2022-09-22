@@ -1,5 +1,7 @@
 # ntustcourse_bigdata
  
-|      hw      |    content     |
-|--------------|----------------|
-|      hw1     | python crawler |
+|      HW      |       DDL      |     CONDITION  |
+|--------------|----------------|----------------|
+|  Web Crawler |       10/4     |        0%      |
+|annotation drill|     10/4     |        0%      |
+ 

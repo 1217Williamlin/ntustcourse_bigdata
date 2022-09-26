@@ -6,6 +6,11 @@ import re
 import time
 from tqdm import tqdm
 
+with open('keyword.txt','r',encoding='utf-8') as file:
+    keywords = []
+    for word in file.readlines():
+        keywords.append(word.strip())
+
 def remove_duplicate(target):
     result = []
     for i in target:
@@ -15,9 +20,8 @@ def remove_duplicate(target):
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
 # 請填10個搜尋詞彙
-keywords = ['運動鞋']
 pages = 6
-df = []
+df = pd.DataFrame()
 for keyword in keywords:
     urls = []
     for page in range(1, pages):
@@ -94,8 +98,7 @@ for keyword in keywords:
             except:
                 pass
         ndf = pd.DataFrame(data=values, index=columns).T
-        df.append(ndf)
-    df = pd.concat(df, ignore_index=True)
+        df = pd.concat([df,ndf], ignore_index=True)
 df.info()
 
 local_time = time.localtime(time.time())

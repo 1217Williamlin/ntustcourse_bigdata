@@ -6,7 +6,7 @@ import re
 import time
 from tqdm import tqdm
 
-with open('keyword.txt','r',encoding='utf-8') as file:
+with open('keyword2.txt','r',encoding='utf-8') as file:
     keywords = []
     for word in file.readlines():
         keywords.append(word.strip())
@@ -56,7 +56,7 @@ for keyword in keywords:
         try:
             # 正規化內容，移除不必要的字元，例如\n\r等等
             price = soup.select('td > del')[0].text
-            price = re.sub(r'\n|\r',"", price ) 
+            price = re.sub(r'\n|\r',"", price) 
         except:
             price = ''
         # 特價
@@ -106,6 +106,4 @@ year = local_time.tm_year
 month = local_time.tm_mon
 day = local_time.tm_mday
 # 儲存檔案
-df.to_excel(f'./B10808006_林亭毅_爬蟲_作業一.xlsx')
-        
-        
+df.to_excel('./B10808006_林亭毅_爬蟲_作業一_2.xlsx')

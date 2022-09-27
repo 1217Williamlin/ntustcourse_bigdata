@@ -6,7 +6,7 @@ import re
 import time
 from tqdm import tqdm
 
-with open('keyword2.txt','r',encoding='utf-8') as file:
+with open('keyword copy.txt','r',encoding='utf-8') as file:
     keywords = []
     for word in file.readlines():
         keywords.append(word.strip())
@@ -49,7 +49,10 @@ for keyword in keywords:
         # 標題
         title = soup.find('meta', {'property': 'og:title'})['content']
         # 品牌
-        brand = soup.find('meta', {'property':'product:brand'})['content']
+        try:
+            brand = soup.find('meta', {'property':'product:brand'})['content']
+        except:
+            brand = ''
         # 連結
         link = soup.find('meta', {'property':'og:url'})['content']
         # 原價
@@ -93,12 +96,16 @@ for keyword in keywords:
                     column = ''
                 value = ''.join([j.text for j in i.findAll('li')])
                 value = re.sub('\n|\r| ', '', value)
-                columns.append(column)
-                values.append(value)
+                if column not in columns:
+                    columns.append(column)
+                    values.append(value)
             except:
                 pass
+        print(df)
         ndf = pd.DataFrame(data=values, index=columns).T
+        print(ndf)
         df = pd.concat([df,ndf], ignore_index=True)
+        print(df)
 df.info()
 
 local_time = time.localtime(time.time())

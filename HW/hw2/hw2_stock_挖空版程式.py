@@ -11,7 +11,8 @@ import six
 import csv
 
 # 宣告OCR物件
-ocr = 你選擇的OCR
+ocr = ddddocr.DdddOcr()
+
 
 # 重複執行直到驗證通過
 while True:
@@ -59,7 +60,7 @@ while True:
             img_bytes = f.read()
         
         #利用OCR辨識圖片
-        vcode = 你選擇的ocr的method(img_bytes)
+        vcode = ocr.classification(img_bytes)
         f.close()
 
         # 圖片刪除
@@ -108,32 +109,32 @@ while True:
 
 # 兩欄合併成一欄
 data = pd.read_csv("output.csv")
+print(data.head())
 combine_df = pd.DataFrame()
 # 取出分點資料表的兩欄資料，並合併成一欄
-df_left = 
-df_right = 
-df_right = 
+df_left = data[['券商','價格','買進股數','賣出股數']]
+df_right = data[['券商.1','價格.1','買進股數.1','賣出股數\r']]
+df_right = df_right.rename({"券商.1":"券商","價格.1":"價格","買進股數.1":"買進股數","賣出股數\r":"賣出股數"},axis=1)
 combine_df = pd.concat([df_left, df_right], axis=0)
 combine_df = combine_df.sort_values(["券商"], ascending=True, ignore_index=True)
-combine_df = combine_df.dropna(axis=0, how='any')
+combine_df = combine_df.dropna(axis=0, how='any')  #how='any'代表只要該行裡，有一個NA值整行就刪除
 combine_df['價格'] = combine_df['價格'].astype(float)
 combine_df['買進股數'] = combine_df['買進股數'].astype(float)
 combine_df['賣出股數'] = combine_df['賣出股數'].astype(float)
 print(combine_df)
-
 
 # 針對買進、賣出、買超、均買價、均賣價進行計算
 temp = pd.DataFrame()
 # 計算買進張數，每張為買進股數之千分之一
 temp["買進"] = combine_df.groupby(by='券商').apply(lambda x: (x['買進股數']/1000).sum())
 # 計算賣出張數，每張為賣出股數之千分之一
-temp["賣出"] =
+temp["賣出"] = combine_df.groupby(by='券商').apply(lambda x: (x['賣出股數']/1000).sum())
 # 計算買超張數，買超為(買進股數-賣出股數)之千分之一
-temp["買超"] =
+temp["買超"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
 # 計算均買價，均買價為當日買進總價除以總股數
-temp["均買價"] =
+temp["均買價"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
 # 計算均賣價，均賣價為當日賣出總價除以總股數
-temp["均賣價"] =
+temp["均賣價"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
 
 
 # 依照買超排序，並取出兩表(買超為正和買超為負的兩表)
@@ -152,3 +153,4 @@ result = pd.concat([positive, negative], axis=1).round(2)
 # result.set_axis(['券商', '買進', '賣出', '買超', '均買價', '均賣價']*2, axis=1, inplace=True)
 print(result)
 result.to_csv("result.csv")
+

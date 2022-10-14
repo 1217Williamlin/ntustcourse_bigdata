@@ -123,6 +123,7 @@ combine_df['買進股數'] = combine_df['買進股數'].astype(float)
 combine_df['賣出股數'] = combine_df['賣出股數'].astype(float)
 print(combine_df)
 
+
 # 針對買進、賣出、買超、均買價、均賣價進行計算
 temp = pd.DataFrame()
 # 計算買進張數，每張為買進股數之千分之一
@@ -132,9 +133,9 @@ temp["賣出"] = combine_df.groupby(by='券商').apply(lambda x: (x['賣出股�
 # 計算買超張數，買超為(買進股數-賣出股數)之千分之一
 temp["買超"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
 # 計算均買價，均買價為當日買進總價除以總股數
-temp["均買價"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
+temp["均買價"] = combine_df.groupby(by='券商').apply(lambda x: (x['價格']*x['買進股數']).sum()/(x['買進股數'].sum()))
 # 計算均賣價，均賣價為當日賣出總價除以總股數
-temp["均賣價"] = combine_df.groupby(by='券商').apply(lambda x: ((x['買進股數']-x['賣出股數'])/1000).sum())
+temp["均賣價"] = combine_df.groupby(by='券商').apply(lambda x: (x['價格']*x['賣出股數']).sum()/(x['賣出股數'].sum()))
 
 
 # 依照買超排序，並取出兩表(買超為正和買超為負的兩表)
@@ -143,14 +144,14 @@ temp = temp.reset_index(level=None, drop=False, inplace=False, col_level=0, col_
 positive = temp[temp['買超'] >= 0]
 positive = positive.sort_values(by='買超', ascending=False).reset_index()
 # 利用filter取出買超為負的row
-negative =
+negative = temp[temp['買超'] < 0]
 negative = negative.sort_values(by='買超').reset_index()
 del positive['index']
 del negative['index']
 
 # 將兩表合併，並儲存至csv
 result = pd.concat([positive, negative], axis=1).round(2)
-# result.set_axis(['券商', '買進', '賣出', '買超', '均買價', '均賣價']*2, axis=1, inplace=True)
+result.set_axis(['券商', '買進', '賣出', '買超', '均買價', '均賣價']*2, axis=1, inplace=True)
 print(result)
 result.to_csv("result.csv")
 
